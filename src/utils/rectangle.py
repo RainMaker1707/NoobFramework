@@ -98,6 +98,31 @@ class Resizeable:
         self.resize(width, height)
 
 
+class Draggable:
+    def __init__(self):
+        self.start_position: tuple[int, int] | None = None
+        self.current_position: tuple[int, int] | None = None
+        self.state: str = "idle"
+
+    def start_drag(self, x: int, y: int):
+        position = (x, y)
+        self.start_position = position
+        self.current_position = position
+        self.state = "dragging"
+
+    def drag_to(self, x: int, y: int):
+        if self.state != "dragging":
+            raise RuntimeError("Cannot drag before starting a drag")
+        self.current_position = (x, y)
+
+    def stop_drag(self):
+        self.state = "idle"
+
+    def reset_drag(self):
+        self.start_position = None
+        self.current_position = None
+        self.state = "idle"
+
 class Rectangle(Moveable, Resizeable):
     def __init__(self, x = 0, y = 0, z = 0, width=0, height=0):
         Moveable.__init__(self, x, y, z)
