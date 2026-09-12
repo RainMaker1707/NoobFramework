@@ -16,7 +16,7 @@ class Button(Widget):
             size_x: int=0,
             size_y: int=0,
         ):
-        super().__init__(x=position_x, y=position_y, w=size_x, h=size_y)
+        super().__init__(x=position_x, y=position_y, z=z_index, w=size_x, h=size_y)
         self.string = string
         self.callback = callback
         self.active = True
@@ -26,10 +26,10 @@ class Button(Widget):
         self.padding = {"x": 10, "y": 5}
 
     def render(self, sdl_renderer, override_x=None, override_y=None, override_w=None, override_h=None):
-        x = override_x if override_x is not None else self.position['x']
-        y = override_y if override_y is not None else self.position['y']
-        w = override_w if override_w is not None else self.size['x']
-        h = override_h if override_h is not None else self.size['y']
+        x = override_x if override_x is not None else self.rectangle.x
+        y = override_y if override_y is not None else self.rectangle.y
+        w = override_w if override_w is not None else self.rectangle.width
+        h = override_h if override_h is not None else self.rectangle.height
         rect = sdl2.SDL_Rect(x, y, w, h)
         # Background color
         r, g, b = getattr(self, 'color', Color.GRAY_DARK)

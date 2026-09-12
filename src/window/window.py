@@ -1,7 +1,7 @@
 import sdl2
 import ctypes
 from typing import Dict
-from src import Panel, allow_batch
+from src import Panel, allow_batch, Rectangle
 
 
 class DragContext:
@@ -13,7 +13,7 @@ class DragContext:
 
     def start_drag(self, panel, mx, my, payload=None):
         self.source_panel = panel
-        self.start_position = dict(panel.position)
+        self.start_position = (panel.rectangle.x, panel.rectangle.y)
         self.payload = payload
         self.is_active = True
 
@@ -23,8 +23,7 @@ class DragContext:
         self.payload = None
         self.is_active = False
 
-
-class Window():
+class Window:
     mx: int
     my: int
 
@@ -39,8 +38,7 @@ class Window():
         framerate: int = 120,
         ):
         self.title = title
-        self.position = {'x': position_x, 'y': position_y}
-        self.size = {'x': size_x, 'y': size_y}
+        self.rectangle = Rectangle(x= position_x, y=position_y, width=size_x, height=size_y)
         self.panels : dict(str, Panel) = {}
         self.add_panel(panels_dict)
         self._sdl_window = None
@@ -59,8 +57,8 @@ class Window():
         self.panels[string] = o_panel
         return True
 
-    def get_ordered_panels(self, order_key='z') -> list[Panel]:
-        return sorted(self.panels.values(), key=lambda e: e.position['z'])
+    def get_ordered_panels(self) -> list[Panel]:
+        return sorted(self.panels.values())
 
     def open(self):
         """Ouvre la fenêtre et lance la boucle de rendu 2D."""
@@ -71,10 +69,10 @@ class Window():
         # Window creation
         self._sdl_window = sdl2.SDL_CreateWindow(
             self._title_as_bytes,
-            self.position['x'],
-            self.position['y'],
-            self.size['x'],
-            self.size['y'],
+            self.rectangle.x,
+            self.rectangle.y,
+            self.rectangle.width,
+            self.rectangle.height,
             sdl2.SDL_WINDOW_SHOWN | sdl2.SDL_WINDOW_RESIZABLE
         )
         if not self._sdl_window:
@@ -98,8 +96,8 @@ class Window():
                     return
                 if event.type == sdl2.SDL_WINDOWEVENT:
                     if event.window.event == sdl2.SDL_WINDOWEVENT_RESIZED:
-                        self.size['x'] = event.window.data1
-                        self.size['y'] = event.window.data2
+                        self.rectangle.width = event.window.data1
+                        self.rectangle.height = event.window.data2
 
                 elif event.type == sdl2.SDL_MOUSEBUTTONDOWN:
                     
@@ -124,7 +122,7 @@ class Window():
                                 target_panel = panel
                                 break
                         if target_panel and target_panel.can_accept_drop:
-                            target_panel.position = {'x': self.mx, 'y': self.my, 'z': target_panel.z_index}
+                            target_panel.rectangle.move(self.mx, self.my)
                         self.drag_context.reset()
             # Background cleanup
             sdl2.SDL_SetRenderDrawColor(self._sdl_renderer, 30, 30, 30, 255)
@@ -147,8 +145,8 @@ class Window():
             preview_rect = sdl2.SDL_Rect(
                 int(mx - self._drag_offset['x']),
                 int(my - self._drag_offset['y']),
-                int(self.drag_context.source_panel.size['x']),
-                int(self.drag_context.source_panel.size['y'])
+                int(self.drag_context.source_panel.rectangle.width),
+                int(self.drag_context.source_panel.rectangle.height)
             )
             # Activer le mode Blend pour la transparence SDL2
             sdl2.SDL_SetRenderDrawBlendMode(self._sdl_renderer, sdl2.SDL_BLENDMODE_BLEND)

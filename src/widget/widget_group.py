@@ -17,10 +17,10 @@ class WidgetGroup(Widget):
         self.add_widget(widget_list)
 
     def render(self, sdl_renderer, override_x=None, override_y=None, override_w=None, override_h=None):
-        base_x = override_x if override_x is not None else self.position['x']
-        base_y = override_y if override_y is not None else self.position['y']
-        base_w = override_w if override_w is not None else self.size['x']
-        base_h = override_h if override_h is not None else self.size['y']
+        base_x = override_x if override_x is not None else self.rectangle.x
+        base_y = override_y if override_y is not None else self.rectangle.y
+        base_w = override_w if override_w is not None else self.rectangle.width
+        base_h = override_h if override_h is not None else self.rectangle.height
 
         if base_w > 0 and base_h > 0:
             border_color = Color.GRAY_LIGHT

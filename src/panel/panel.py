@@ -1,4 +1,4 @@
-from src import Color, Menu, Button, allow_batch, Widget, WidgetGroup
+from src import Color, Menu, Button, allow_batch, Widget, WidgetGroup, Rectangle
 import sdl2
 import ctypes
 import sdl2.sdlttf as sdlttf
@@ -7,23 +7,22 @@ from copy import deepcopy
 sdlttf.TTF_Init()
 
 
-class Panel():
+class Panel:
     def __init__(
         self,
         string: str,
-        size_x: int = 1080, 
-        size_y: int = 1920, 
-        position_x: int = 0, 
-        position_y: int = 0, 
+        size_x: int = 1080,
+        size_y: int = 1920,
+        position_x: int = 0,
+        position_y: int = 0,
         z_index: int = 0,
         color: Color = Color.BLUE,
         border_color: Color = Color.GRAY_LIGHT,
         can_accept_drop: bool = False,
         menu: Menu|None = None,
         ):
+        self.rectangle = Rectangle(position_x, position_y, z_index, size_x, size_y)
         self.string: str = string
-        self.position: dict[str, int] = {'x': position_x, 'y': position_y, 'z': z_index}
-        self.size: dict[str, int] = {'x': size_x, 'y': size_y}
         self.color: Color = color
         self.border_color: Color = border_color
         self.header_height: int = 25
@@ -35,50 +34,23 @@ class Panel():
         self.default_group: WidgetGroup = WidgetGroup(f"{self.string}_root_group")
         self.groups.append(self.default_group)
 
-    @property
-    def z_index(self):
-        return self.position['z']
-    
-    @z_index.setter
-    def z_index(self, value: int):
-        self.position['z'] = value
 
-    @property
-    def position_x(self):
-        return self.position['x']
-
-    @position_x.setter
-    def position_x(self, value: int):
-        if value < 0: 
-            raise ValueError("Position X cannot be lower than 0")
-        self.position_x = value
-    
-    @property
-    def position_y(self):
-        return self.position['y']
-    
-    @position_y.setter
-    def position_y(self, value: int):
-        if value < 0: 
-            raise ValueError("Position Y cannot be lower than 0")
-        self.position_y = value
+    def __lt__(self, other):
+        if not isinstance(other, Panel):
+            return NotImplemented
+        return self.rectangle.z_index < other.rectangle.z_index
 
     def render(self, sdl_renderer):
-        rect = sdl2.SDL_Rect(
-                int(self.position['x']),
-                int(self.position['y']),
-                int(self.size['x']),
-                int(self.size['y'])
-            )
+        rect = self.rectangle.sdl
         # Background color
         r, g, b = getattr(self, 'color', Color.BLUE)
         sdl2.SDL_SetRenderDrawColor(sdl_renderer, r, g, b, 255)
         sdl2.SDL_RenderFillRect(sdl_renderer, ctypes.byref(rect))
         if self.header_height > 0:
             rect_header = sdl2.SDL_Rect(
-                int(self.position['x']),
-                int(self.position['y']),
-                int(self.size['x']),
+                int(self.rectangle.x),
+                int(self.rectangle.y),
+                int(self.rectangle.width),
                 int(self.header_height)
             )
             br, bg, bb = self.border_color[:3]
@@ -97,8 +69,8 @@ class Panel():
                     text_w = text_surface.contents.w
                     text_h = text_surface.contents.h
                     dst_rect = sdl2.SDL_Rect(
-                        int(self.position['x'] + 5),
-                        int(self.position['y'] + (self.header_height - text_h) // 2),
+                        int(self.rectangle.x + 5),
+                        int(self.rectangle.y + (self.header_height - text_h) // 2),
                         text_w,
                         text_h
                     )
@@ -107,19 +79,19 @@ class Panel():
                     sdl2.SDL_DestroyTexture(text_texture)
         previous_groups_height = self.header_height
         for group in self.groups:
-            group.render(sdl_renderer, override_x=self.position_x, override_y=self.position_y+previous_groups_height)
-            previous_groups_height += group.size['y']
+            group.render(sdl_renderer, override_x=self.rectangle.x, override_y=self.rectangle.y+previous_groups_height)
+            previous_groups_height += group.rectangle.height
 
     def is_header_clicked(self, x: int, y: int) -> bool:
         return (
-            self.position['x'] <= x <= self.position['x'] + self.size['x'] and
-            self.position['y'] <= y <= self.position['y'] + self.header_height
+            self.rectangle.x <= x <= self.rectangle.x + self.rectangle.width and
+            self.rectangle.y <= y <= self.rectangle.y + self.header_height
         )
 
     def is_point_inside(self, x: int, y: int) -> bool:
         return (
-            self.position['x'] <= x <= self.position['x'] + self.size['x'] and
-            self.position['y'] <= y <= self.position['y'] + self.size['y']
+            self.rectangle.x <= x <= self.rectangle.x + self.rectangle.width and
+            self.rectangle.y <= y <= self.rectangle.y + self.rectangle.height
         )
 
     @allow_batch

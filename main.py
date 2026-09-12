@@ -8,6 +8,6 @@ if __name__ == "__main__":
             ]
         )
     p1 = w.panels.get('test')
-    p1.add(WidgetGroup("group_test1", w=p1.size['x']-50, h=100))
-    p1.add(WidgetGroup("group_test2", w=p1.size['x']-5, h=150))
+    p1.add(WidgetGroup("group_test1", w=p1.rectangle.width-50, h=100))
+    p1.add(WidgetGroup("group_test2", w=p1.rectangle.width-5, h=150))
     w.open()
