@@ -147,8 +147,8 @@ class Rectangle(Moveable, Resizeable):
     @property
     def sdl(self):
         return sdl2.SDL_Rect(
-            int(self.rectangle.x),
-            int(self.rectangle.y),
-            int(self.rectangle.width),
-            int(self.rectangle.height)
+            int(self.x),
+            int(self.y),
+            int(self.width),
+            int(self.height)
         )
