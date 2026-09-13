@@ -29,7 +29,7 @@ class Panel():
         self.header_height: int = 25
         self.can_accept_drop: bool = can_accept_drop
         self.menu: Menu|None = menu
-        self._font = sdlttf.TTF_OpenFont(b"C:\\Windows\\Fonts\\arial.ttf", 14)
+        self._font = sdlttf.TTF_OpenFont(b"src/fonts/arial.ttf", 14)
         self._font_color = Color.WHITE
         self.groups: list[WidgetGroup] = []
         self.default_group: WidgetGroup = WidgetGroup(f"{self.string}_root_group")
