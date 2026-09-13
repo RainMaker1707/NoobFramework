@@ -20,7 +20,7 @@ class Button(Widget):
         self.string = string
         self.callback = callback
         self.active = True
-        self._font = sdlttf.TTF_OpenFont(b"C:\\Windows\\Fonts\\arial.ttf", 14)
+        self._font = sdlttf.TTF_OpenFont(b"src/fonts/arial.ttf", 14)
         self._font_color = Color.WHITE
         self.margin = {"x": 15, "y": 10}
         self.padding = {"x": 10, "y": 5}
