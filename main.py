@@ -3,7 +3,7 @@ from src import Color, Panel, Window, Button,WidgetGroup
 if __name__ == "__main__":
     w = Window(panels_dict=
             [
-                Panel("test", size_x=250, size_y=1050, z_index=100, can_accept_drop=True), 
+                Panel("test", size_x=250, size_y=1050, z_index=100, draggable=True), 
                 Panel("cannot_move", color=Color.RED, position_x=1700, position_y=0, size_x=220, size_y=1050),
             ]
         )

@@ -18,7 +18,7 @@ class Panel():
         z_index: int = 0,
         color: Color = Color.BLUE,
         border_color: Color = Color.GRAY_LIGHT,
-        can_accept_drop: bool = False,
+        draggable: bool = False,
         menu: Menu|None = None,
         ):
         self.string: str = string
@@ -27,7 +27,7 @@ class Panel():
         self.color: Color = color
         self.border_color: Color = border_color
         self.header_height: int = 25
-        self.can_accept_drop: bool = can_accept_drop
+        self.draggable: bool = draggable
         self.menu: Menu|None = menu
         self._font = sdlttf.TTF_OpenFont(b"src/fonts/arial.ttf", 14)
         self._font_color = Color.WHITE

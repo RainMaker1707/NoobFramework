@@ -1,0 +1,24 @@
+{
+    "version": "0.0.1",
+    "title": "NoobFramework 2222",
+    "description": "This is a minimal window used for testing purposes in duplicate",
+    "author": "RainMaker1707 & MrSweeter",
+    "window": {
+        "height": 1080,
+        "width": 1920,
+        "position_x": 0,
+        "position_y": 0,
+        "panels":[
+            {
+                "title":"Left Panel (Dr.)",
+                "height": 1080,
+                "width": 1920,
+                "position_x": 0,
+                "position_y": 0,
+                "z_index": 1,
+                "draggable": true,
+                "resizable": true
+            }
+        ]
+    }
+}
