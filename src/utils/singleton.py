@@ -11,6 +11,7 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 
+
 class Singleton(metaclass=SingletonMeta):
     """
         /!\\ Never call super() in unherited object /!\\
@@ -20,4 +21,6 @@ class Singleton(metaclass=SingletonMeta):
                If tried to re-instanciate it, it returns the current instanciated object instead.
     This object is not intended to be directly instanciated and will raise an Error if it is tried.
     """
-    pass
+    @classmethod
+    def reset(cls):
+        return cls._instances.pop(cls, None) is not None

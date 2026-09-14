@@ -61,7 +61,7 @@ class Window():
             size_y=min(1080, config.window.get('height') or 1080),
             framerate=config.window.get('framerate') or 120,
             )
-        config.panels = [
+        panels = [
             Panel(
                 string=e.get('title') or "",
                 position_x=max(0, e.get('position_x') or 0),
@@ -73,7 +73,7 @@ class Window():
                 ) 
             for e in config.panels
             ]
-        to_return.add_panel(config.panels)
+        to_return.add_panel(panels)
         return to_return
 
     @allow_batch
