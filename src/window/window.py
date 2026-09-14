@@ -1,7 +1,7 @@
 import sdl2
 import ctypes
 from typing import Dict
-from src import Panel, allow_batch
+from src import Config, Panel, allow_batch, Color
 
 
 class DragContext:
@@ -42,13 +42,39 @@ class Window():
         self.position = {'x': position_x, 'y': position_y}
         self.size = {'x': size_x, 'y': size_y}
         self.panels : dict(str, Panel) = {}
-        self.add_panel(panels_dict)
+        if panels_dict: 
+            self.add_panel(panels_dict)
         self._sdl_window = None
         self._is_running = False
         self._title_as_bytes = self.title.encode('utf-8')
         self._framerate = framerate
         self.drag_context = DragContext()
         self._drag_offset = {'x': 0, 'y': 0}
+
+    @classmethod
+    def initiate_fom_config(cls, config: Config):
+        to_return = cls(
+            title=config.title,
+            position_x=max(0, config.window.get('position_x') or 0),
+            position_y=max(30, config.window.get('position_y') or 30),
+            size_x=min(1920, config.window.get('width') or 1920),
+            size_y=min(1080, config.window.get('height') or 1080),
+            framerate=config.window.get('framerate') or 120,
+            )
+        panels = [
+            Panel(
+                string=e.get('title') or "",
+                position_x=max(0, e.get('position_x') or 0),
+                position_y=max(0, e.get('position_y') or 0),
+                size_x=min(1920, e.get('width') or 1920),
+                size_y=min(1080, e.get('height') or 1080),
+                z_index=e.get('z_index') or 0,
+                color=Color(tuple(e.get('color') or Color.BLUE))
+                ) 
+            for e in config.panels
+            ]
+        to_return.add_panel(panels)
+        return to_return
 
     @allow_batch
     def add_panel(self, o_panel: Panel, string: str = ""):
@@ -123,7 +149,7 @@ class Window():
                             if panel == self.drag_context.source_panel:
                                 target_panel = panel
                                 break
-                        if target_panel and target_panel.can_accept_drop:
+                        if target_panel and target_panel.draggable:
                             target_panel.position = {'x': self.mx, 'y': self.my, 'z': target_panel.z_index}
                         self.drag_context.reset()
             # Background cleanup
@@ -141,7 +167,7 @@ class Window():
         """Dessine les panneaux sous forme de rectangles remplis."""
         for panel in self.get_ordered_panels():
             panel.render(self._sdl_renderer)
-        if self.drag_context.is_active and self.drag_context.source_panel.can_accept_drop:
+        if self.drag_context.is_active and self.drag_context.source_panel.draggable:
             mx, my = (self.mx, self.my)
             # Rectangle de prévisualisation qui suit la souris
             preview_rect = sdl2.SDL_Rect(
