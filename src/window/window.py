@@ -42,7 +42,7 @@ class Window():
         self.position = {'x': position_x, 'y': position_y}
         self.size = {'x': size_x, 'y': size_y}
         self.panels : dict(str, Panel) = {}
-        if self.panels: 
+        if panels_dict: 
             self.add_panel(panels_dict)
         self._sdl_window = None
         self._is_running = False
