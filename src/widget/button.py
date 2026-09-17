@@ -1,12 +1,12 @@
 from src import Color
-from . import Widget
+from . import Widget, Clickable
 import sdl2
 import ctypes
 import sdl2.sdlttf as sdlttf
 
 sdlttf.TTF_Init()
 
-class Button(Widget):
+class Button(Clickable):
     def __init__(self, 
             string: str,
             callback: func,

@@ -69,6 +69,7 @@ class Window():
                 size_x=min(1920, e.get('width') or 1920),
                 size_y=min(1080, e.get('height') or 1080),
                 z_index=e.get('z_index') or 0,
+                draggable=e.get('draggable') or False,
                 color=Color(tuple(e.get('color') or Color.BLUE))
                 ) 
             for e in config.panels
