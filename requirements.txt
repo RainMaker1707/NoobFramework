@@ -4,5 +4,6 @@ enum
 json
 os
 pathlib
+screeninfo
 sdl2
 typing
