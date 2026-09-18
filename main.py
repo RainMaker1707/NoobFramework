@@ -1,4 +1,4 @@
-from src import Color, Panel, Window, Button,WidgetGroup
+from src import Color, Panel, Window, Button, WidgetGroup, Clickable
 
 if __name__ == "__main__":
     w = Window(panels_dict=
@@ -10,4 +10,5 @@ if __name__ == "__main__":
     p1 = w.panels.get('test')
     p1.add(WidgetGroup("group_test1", w=p1.size['x']-50, h=100))
     p1.add(WidgetGroup("group_test2", w=p1.size['x']-5, h=150))
+    w.panels.get('cannot_move').add(Clickable("test", lambda: print('eheheh'), 10, 0, 200, 100))
     w.open()

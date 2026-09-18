@@ -127,6 +127,6 @@ class Panel():
         if isinstance(widget, WidgetGroup):
             self.groups.append(widget)
         elif isinstance(widget, Widget):
-            self.default_group.append(widget)
+            self.default_group.add_widget(widget)
         else:
             raise ValueError(f"Cannot append type {type(widget)} to Panel, only Widget and derivated are authorized")

@@ -34,7 +34,7 @@ class WidgetGroup(Widget):
     @allow_batch
     def add_widget(self, o_widget: Widget, string: str = ""):
         if not string:
-            string = o_widget.string()
+            string = o_widget.string
         if self.widgets.get(string) is not None:
             raise ValueError(f"Widget {string} already present in group {self.string}")
         self.widgets[string] = o_widget
