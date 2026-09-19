@@ -1,4 +1,6 @@
 from screeninfo import Monitor
+import sdl2
+import ctypes
 
 from src.utils import \
     Singleton, \
@@ -36,5 +38,26 @@ class Application(Singleton):
         self._height = sanitize_height(value)
 
     def run(self):
-        self.main_window.open()
+        self.main_window.render()
         # TODO: Event based loop
+        event = sdl2.SDL_Event()
+        self._is_running = True
+        while self._is_running:
+            if sdl2.SDL_WaitEvent(ctypes.byref(event)) == 0:
+                print(event)
+                continue
+            
+            if event.type == sdl2.SDL_QUIT:
+                self.close()
+                return
+            if event.type == sdl2.SDL_WINDOWEVENT:
+                if event.window.event == sdl2.SDL_WINDOWEVENT_RESIZED:
+                    self.main_window.resize(event.window.data1, event.window.data2)
+                    self.main_window.render()
+
+    def close(self):
+        if not self._is_running:
+            return
+        self._is_running = False
+        self.main_window.destroy()
+        sdl2.SDL_Quit()

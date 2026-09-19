@@ -1,9 +1,4 @@
-copy
-ctypes
-enum
-json
-os
-pathlib
+pysdl2
+pysdl2-dll
 screeninfo
-sdl2
 typing

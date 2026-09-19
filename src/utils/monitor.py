@@ -7,3 +7,5 @@ for monitor in MONITORS:
         PRIMARY_MONITOR = monitor
         break
 ACTIVE_MONITOR = PRIMARY_MONITOR or MONITORS[0]
+
+WINDOW_HEADER_SIZE=35
