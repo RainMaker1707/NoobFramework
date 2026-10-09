@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import sdl2
 from ctypes import c_int, byref
 
-from src.utils import Color, sanitize_width, sanitize_height, WINDOW_HEADER_SIZE, Size
+from src.utils import Color, sanitize_width, sanitize_height, WINDOW_HEADER_SIZE, Size, Position
 
 if TYPE_CHECKING:
     from src.application import Application
@@ -13,9 +13,7 @@ class Window:
                 parent_app : Application,
                 size: Size = Size(1920, 1080),
                 title: str = "NoobFramework's Window",
-                z_index: int = 0,
-                x: int = 0,
-                y: int = 0,
+                position: Position = Position(0, WINDOW_HEADER_SIZE, 0),
                 background_color: Color = Color.GRAY_LIGHT,
                 resizable: bool = True,
                 closable: bool = True
@@ -23,10 +21,10 @@ class Window:
         self.parent_app = parent_app
         self.title = title
         self.size = size
-        self.z_index = z_index
-        self.x = c_int(x)
-        self.y = c_int(y + WINDOW_HEADER_SIZE)
-        self.panels = None
+        self.position = position
+        
+        self.panels = []
+
         if sdl2.SDL_Init(sdl2.SDL_INIT_VIDEO) < 0:
             raise RuntimeError("Failed to initialize SDL2.SDL_INIT_VIDEO")  
         self._sdl_window = sdl2.SDL_CreateWindow(
@@ -51,7 +49,7 @@ class Window:
     def render(self):
         # Only draw the frame here — never recreate the window/renderer
         sdl2.SDL_SetRenderDrawColor(self._sdl_renderer, 30, 30, 30, 255)
-        sdl2.SDL_GetWindowPosition(self._sdl_window, byref(self.x), byref(self.y))
+        sdl2.SDL_GetWindowPosition(self._sdl_window, byref(c_int(self.position.x)), byref(c_int(self.position.y)))
         sdl2.SDL_RenderClear(self._sdl_renderer)
         sdl2.SDL_RenderPresent(self._sdl_renderer)
 

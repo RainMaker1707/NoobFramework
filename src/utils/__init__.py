@@ -4,6 +4,7 @@ from .config import Config
 from .singleton import Singleton
 from .resizable import Resizable
 from .draggable import Draggable
+from .position import Position
 from .size import Size
 
 from .monitor import *

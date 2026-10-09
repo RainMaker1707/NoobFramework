@@ -1,5 +1,6 @@
 class Size:
     def __init__(self, height: int, width: int):
+        # TODO sanitize values
         self._height = height
         self._width = width
 
